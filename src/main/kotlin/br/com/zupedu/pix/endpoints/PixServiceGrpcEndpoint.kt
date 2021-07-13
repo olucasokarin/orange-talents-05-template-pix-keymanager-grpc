@@ -4,6 +4,7 @@ import br.com.zupedu.grpc.PixServiceGrpc
 import br.com.zupedu.grpc.RegisterPixReply
 import br.com.zupedu.grpc.RegisterPixRequest
 import br.com.zupedu.pix.RegisterPixService
+import br.com.zupedu.pix.ValidKeyPix
 import br.com.zupedu.pix.model.KeyPix
 import br.com.zupedu.pix.model.enums.TypeAccount
 import br.com.zupedu.pix.model.enums.TypeKey
@@ -43,31 +44,32 @@ fun RegisterPixRequest.convertRequestGrpcToRequestKey() =
         idClient = idClient,
         typeKey = when(typeKey) {
             br.com.zupedu.grpc.TypeKey.UNKNOWN_KEY -> null
-            else -> typeKey.name
+            else -> TypeKey.valueOf(typeKey.name)
         },
         valueKey = valueKey,
         typeAccount = when (typeAccount) {
             br.com.zupedu.grpc.TypeAccount.UNKNOWN_ACCOUNT -> null
-            else -> typeAccount.name
+            else -> TypeAccount.valueOf(typeAccount.name)
         }
     )
 
+@ValidKeyPix
 @Introspected
 data class KeyPixRequest(
     @field:NotBlank
     val idClient: String?,
     @field:NotNull
-    val typeKey: String?,
+    val typeKey: TypeKey?,
     @field:Size(max= 77)
     val valueKey: String?,
-    @field:NotBlank
-    val typeAccount: String?
+    @field:NotNull
+    val typeAccount: TypeAccount?
 ) {
     fun convertToEntityPix() =
         KeyPix(
             idClient = UUID.fromString(this.idClient),
-            typeAccount = TypeAccount.valueOf(this.typeAccount!!),
-            typeKey = TypeKey.valueOf(this.typeKey!!),
-            valueKey = if(TypeKey.valueOf(this.typeKey) == TypeKey.RANDOM_KEY) UUID.randomUUID().toString() else this.valueKey!!
+            typeAccount = TypeAccount.valueOf(this.typeAccount!!.name),
+            typeKey = TypeKey.valueOf(this.typeKey!!.name),
+            valueKey = if (this.typeKey == TypeKey.RANDOM_KEY) UUID.randomUUID().toString() else this.valueKey!!
         )
 }
