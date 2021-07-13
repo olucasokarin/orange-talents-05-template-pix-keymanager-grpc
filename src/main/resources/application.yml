@@ -18,3 +18,8 @@ datasources:
     dialect: ${DB_DIALECT:POSTGRES}
 
 jpa.default.properties.hibernate.hbm2ddl.auto: update
+
+# Urls
+URL:
+  EXTERNAL:
+    ITAU: ${ITAU_URL:`http://localhost:9091`}

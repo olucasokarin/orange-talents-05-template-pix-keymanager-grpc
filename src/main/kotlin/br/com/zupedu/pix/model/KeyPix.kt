@@ -30,5 +30,7 @@ class KeyPix(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
+    var externalId: UUID? = UUID.randomUUID();
+
     val createAt: LocalDateTime = LocalDateTime.now()
 }

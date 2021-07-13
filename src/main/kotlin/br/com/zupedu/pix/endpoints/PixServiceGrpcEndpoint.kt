@@ -30,11 +30,14 @@ class PixServiceGrpcEndpoint(
     ) {
         val requestPixGrpc = request?.convertRequestGrpcToRequestKey()
 
-        service.register(requestPixGrpc!!)
+        val pixKey = service.register(requestPixGrpc!!)
 
-        val id = RegisterPixReply.newBuilder().setIdClient(UUID.randomUUID().toString()).build()
+        val response = RegisterPixReply.newBuilder()
+            .setIdClient(pixKey.idClient.toString())
+            .setIdPix(pixKey.externalId.toString())
+            .build()
 
-        responseObserver?.onNext(id)
+        responseObserver?.onNext(response)
         responseObserver?.onCompleted()
     }
 }
