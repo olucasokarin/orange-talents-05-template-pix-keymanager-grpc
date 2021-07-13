@@ -1,3 +1,20 @@
 micronaut:
   application:
     name: pix
+
+grpc:
+  server:
+    port: ${SERVER_PORT:50052}
+    keep-alive-time: 1h
+    max-inbound-message-size: 1024
+
+datasources:
+  default:
+    url: ${DB_URI:`jdbc:postgresql://localhost:5432/pixdb`}
+    driverClassName: org.postgresql.Driver
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:password}
+    schema-generate: CREATE_DROP
+    dialect: ${DB_DIALECT:POSTGRES}
+
+jpa.default.properties.hibernate.hbm2ddl.auto: update

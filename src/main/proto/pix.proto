@@ -1,19 +1,37 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-option java_package = "br.com.zupedu";
+option java_package = "br.com.zupedu.grpc";
 option java_outer_classname = "PixServiceOuterClass";
 
-package br.com.zupedu;
+package br.com.zupedu.grpc;
 
 service PixService {
-  rpc send (PixRequest) returns (PixReply) {}
+  rpc register (RegisterPixRequest) returns (RegisterPixReply) {}
 }
 
-message PixRequest {
-  string name = 1;
+enum TypeKey {
+  UNKNOWN_KEY = 0;
+  CPF = 1;
+  EMAIL = 2;
+  NUMBER_CELL = 3;
+  RANDOM_KEY = 4;
 }
 
-message PixReply {
-  string message = 1;
+enum TypeAccount {
+  UNKNOWN_ACCOUNT = 0;
+  CHECKING_ACCOUNT = 1;
+  SAVINGS_ACCOUNT = 2;
+}
+
+message RegisterPixRequest {
+  string idClient = 1;
+  TypeKey typeKey = 2;
+  string valueKey = 3;
+  TypeAccount typeAccount = 4;
+}
+
+message RegisterPixReply {
+  string idClient = 1;
+  string idPix = 2;
 }
