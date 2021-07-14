@@ -42,8 +42,11 @@ dependencies {
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
 
     runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 
+    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("org.mockito:mockito-junit-jupiter:3.8.0")
+    testImplementation("com.h2database:h2")
 
 
 
