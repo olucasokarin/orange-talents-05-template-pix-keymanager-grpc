@@ -10,6 +10,10 @@ service PixService {
   rpc register (RegisterPixRequest) returns (RegisterPixReply) {}
 }
 
+service RemovePixService {
+  rpc remove (RemovePixRequest) returns (RemovePixReply) {}
+}
+
 enum TypeKey {
   UNKNOWN_KEY = 0;
   CPF = 1;
@@ -34,4 +38,13 @@ message RegisterPixRequest {
 message RegisterPixReply {
   string idClient = 1;
   string idPix = 2;
+}
+
+message RemovePixRequest {
+    string idClient = 1;
+    string idPixKey = 2;
+}
+
+message RemovePixReply {
+  string status = 1;
 }

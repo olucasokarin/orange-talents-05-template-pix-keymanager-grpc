@@ -33,4 +33,8 @@ class KeyPix(
     var externalId: UUID? = UUID.randomUUID();
 
     val createAt: LocalDateTime = LocalDateTime.now()
+
+    fun pixBelongsToTheClient(value: String?) =
+        this.idClient.toString() == value
+
 }

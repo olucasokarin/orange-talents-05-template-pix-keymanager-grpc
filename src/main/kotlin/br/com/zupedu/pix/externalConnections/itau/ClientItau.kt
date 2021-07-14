@@ -14,7 +14,15 @@ interface ClientItau {
     @Get("/api/v1/clientes/{id}/contas{?tipo}")
     @Consumes(MediaType.APPLICATION_JSON)
     fun retrieve(@PathVariable id: String?, @QueryValue tipo: String?): HttpResponse<ClientItauResponse>
+
+    @Get("/api/v1/clientes/{idClient}")
+    fun retrieveAccountClient(@PathVariable idClient: String?) : HttpResponse<ClientItauAccountResponse>
 }
+
+data class ClientItauAccountResponse(
+    val id: String,
+    val nome: String
+)
 
 data class ClientItauResponse(
     val tipo: String,
