@@ -5,7 +5,10 @@ import br.com.zupedu.grpc.RegisterPixReply
 import br.com.zupedu.grpc.RegisterPixRequest
 import br.com.zupedu.pix.RegisterPixService
 import br.com.zupedu.pix.ValidKeyPix
+import br.com.zupedu.pix.externalConnections.itau.ClientItauResponse
+import br.com.zupedu.pix.model.Institution
 import br.com.zupedu.pix.model.KeyPix
+import br.com.zupedu.pix.model.Owner
 import br.com.zupedu.pix.model.enums.TypeAccount
 import br.com.zupedu.pix.model.enums.TypeKey
 import br.com.zupedu.shared.handlingErrors.ErrorAroundHandler
@@ -68,11 +71,21 @@ data class KeyPixRequest(
     @field:NotNull
     val typeAccount: TypeAccount?
 ) {
-    fun convertToEntityPix() =
+    fun convertToEntityPix(response: ClientItauResponse) =
         KeyPix(
             idClient = UUID.fromString(this.idClient),
             typeAccount = TypeAccount.valueOf(this.typeAccount!!.name),
             typeKey = TypeKey.valueOf(this.typeKey!!.name),
-            valueKey = if (this.typeKey == TypeKey.RANDOM_KEY) UUID.randomUUID().toString() else this.valueKey!!
+            valueKey = if (this.typeKey == TypeKey.RANDOM_KEY) UUID.randomUUID().toString() else this.valueKey!!,
+            branch = response.agencia,
+            accountNumber = response.numero,
+            institution = Institution(
+                nome = response.instituicao.nome,
+                ispb = response.instituicao.ispb
+            ),
+            owner = Owner(
+                nome = response.titular.nome,
+                cpf = response.titular.cpf
+            )
         )
 }

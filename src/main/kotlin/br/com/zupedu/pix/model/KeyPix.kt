@@ -23,7 +23,21 @@ class KeyPix(
 
     @field:NotBlank
     @Column(unique = true, nullable = false)
-    var valueKey: String
+    var valueKey: String,
+
+    @field:NotBlank
+    val branch: String,
+
+    @field:NotBlank
+    val accountNumber: String,
+
+    @field:NotNull
+    @field:Embedded
+    val institution: Institution,
+
+    @field:NotNull
+    @field:Embedded
+    val owner: Owner
 ) {
 
     @Id
@@ -36,5 +50,9 @@ class KeyPix(
 
     fun pixBelongsToTheClient(value: String?) =
         this.idClient.toString() == value
+
+    fun updateValueKey(valueKey: String) {
+        this.valueKey = valueKey
+    }
 
 }
