@@ -30,15 +30,15 @@ import javax.inject.Inject
 
 @MicronautTest(transactional = false)
 internal class PixServiceGrpcEndpointTest(
-    val pixRepository: PixRepository,
-    val grpcClient: PixServiceGrpc.PixServiceBlockingStub
+    private val pixRepository: PixRepository,
+    private val grpcClient: PixServiceGrpc.PixServiceBlockingStub
 ) {
 
     @Inject
-    lateinit var clientItau: ClientItau
+    private lateinit var clientItau: ClientItau
 
-    companion object {
-        val CLIENT_ID = UUID.randomUUID()
+    private companion object {
+        private val CLIENT_ID = UUID.randomUUID()
     }
 
     @AfterEach
@@ -72,7 +72,6 @@ internal class PixServiceGrpcEndpointTest(
             assertTrue(confirmKey)
         }
     }
-
 
     @Test
     fun `should not be register a new pix key when a same key already exists`() {
@@ -171,8 +170,6 @@ internal class PixServiceGrpcEndpointTest(
             assertEquals(Status.INVALID_ARGUMENT.code, status.code)
             assertEquals("Invalid Data", status.description)
         }
-
-
     }
 
     @Factory
@@ -187,8 +184,6 @@ internal class PixServiceGrpcEndpointTest(
     @MockBean(ClientItau::class)
     fun clientItau() : ClientItau =
         Mockito.mock(ClientItau::class.java)
-
-
 
     private fun dataAccountResponse() =
          ClientItauResponse (

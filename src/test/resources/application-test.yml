@@ -3,6 +3,12 @@ datasources:
     url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
     driverClassName: org.h2.Driver
 
+grpc:
+  server:
+    port: ${TEST_SERVER_PORT:50053}
+    keep-alive-time: 1h
+    max-inbound-message-size: 1024
+
 ##
 # Habilita log do contexto transacional
 ##
