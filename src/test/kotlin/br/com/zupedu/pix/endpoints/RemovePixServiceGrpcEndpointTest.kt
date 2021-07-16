@@ -5,7 +5,9 @@ import br.com.zupedu.grpc.RemovePixServiceGrpc
 import br.com.zupedu.pix.externalConnections.itau.ClientItau
 import br.com.zupedu.pix.externalConnections.itau.ClientItauAccountResponse
 import br.com.zupedu.pix.externalConnections.itau.ClientItauResponse
+import br.com.zupedu.pix.model.Institution
 import br.com.zupedu.pix.model.KeyPix
+import br.com.zupedu.pix.model.Owner
 import br.com.zupedu.pix.model.enums.TypeAccount
 import br.com.zupedu.pix.model.enums.TypeKey
 import br.com.zupedu.pix.repository.PixRepository
@@ -123,9 +125,19 @@ internal class RemovePixServiceGrpcEndpointTest(
         val savedPixKeyOuterUser = pixRepository.save(KeyPix(
             idClient = UUID.randomUUID(),
             typeKey = TypeKey.EMAIL,
-            valueKey = "test@email.com",
-            typeAccount = TypeAccount.CHECKING_ACCOUNT
-        ))
+            valueKey = "outer_key@email.com",
+            typeAccount = TypeAccount.CHECKING_ACCOUNT,
+            branch = "0002",
+            accountNumber = "044967",
+            institution = Institution(
+                nome = "My Bank",
+                ispb = "908765"
+            ),
+            owner = Owner(
+                nome = "Doe Doe",
+                cpf = "55493574020"
+            ))
+        )
 
         `when`(clientItau.retrieveAccountClient(idClient = CLIENT_ID.toString()))
             .thenReturn(HttpResponse.ok(dataClientAccountResponse()))
@@ -168,7 +180,17 @@ internal class RemovePixServiceGrpcEndpointTest(
     private fun dataAccountResponse() =
         ClientItauResponse (
             tipo = "CONTA_CORRENTE",
-            numero = "483201"
+            numero = "483201",
+            instituicao = ClientItauResponse.Instituicao(
+                nome = "My Bank",
+                ispb = "908765"
+            ),
+            agencia = "0001",
+            titular = ClientItauResponse.Titular(
+                nome = "John Doe",
+                cpf = "43951423030",
+                id = UUID.randomUUID().toString()
+            )
         )
 
     private fun createNewKey() =
@@ -176,7 +198,17 @@ internal class RemovePixServiceGrpcEndpointTest(
             idClient = CLIENT_ID,
             typeKey = TypeKey.EMAIL,
             valueKey = "already_key@email.com",
-            typeAccount = TypeAccount.CHECKING_ACCOUNT
+            typeAccount = TypeAccount.CHECKING_ACCOUNT,
+            branch = "0001",
+            accountNumber = "048967",
+            institution = Institution(
+                nome = "My Bank",
+                ispb = "908765"
+            ),
+            owner = Owner(
+                nome = "John Doe",
+                cpf = "43951423030"
+            )
         )
 
 
