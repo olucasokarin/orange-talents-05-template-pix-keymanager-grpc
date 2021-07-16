@@ -21,6 +21,7 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.AfterEach
@@ -187,6 +188,74 @@ internal class RemovePixServiceGrpcEndpointTest(
         }
     }
 
+    @Test
+    fun`should be removed a value key when not found in the system BCB`() {
+        //scenario
+        val savedPixKey = pixRepository.save(createNewKey())
+
+        `when`(clientItau.retrieveAccountClient(idClient = savedPixKey.idClient.toString()))
+            .thenReturn(HttpResponse.ok(dataClientAccountResponse()))
+
+        `when`(clientBcb.removeKey(
+            key = savedPixKey.valueKey,
+            deletePixKeyRequest = DeletePixKeyRequest(
+                key = savedPixKey.valueKey,
+                participant = savedPixKey.institution.ispb
+            )
+        ))
+            .thenReturn(HttpResponse.notFound())
+
+        //actions
+
+        val response = removeGrpcClient.remove(
+            RemovePixRequest.newBuilder()
+                .setIdClient(savedPixKey.idClient.toString())
+                .setIdPixKey(savedPixKey.externalId.toString())
+                .build()
+        )
+
+        //assertions
+        with(response) {
+            assertEquals("Removed", status)
+        }
+    }
+
+    @Test
+    fun`should not be removed a key when participant is not allowed`() {
+        //scenario
+        val savedPixKey = pixRepository.save(createNewKey())
+
+        `when`(clientItau.retrieveAccountClient(idClient = savedPixKey.idClient.toString()))
+            .thenReturn(HttpResponse.ok(dataClientAccountResponse()))
+
+        `when`(clientBcb.removeKey(
+            key = savedPixKey.valueKey,
+            deletePixKeyRequest = DeletePixKeyRequest(
+                key = savedPixKey.valueKey,
+                participant = savedPixKey.institution.ispb
+            )
+        ))
+            .thenReturn(HttpResponse.status(HttpStatus.FORBIDDEN))
+
+        //actions
+        val assertThrows = assertThrows<StatusRuntimeException> {
+            removeGrpcClient.remove(
+                RemovePixRequest.newBuilder()
+                    .setIdClient(savedPixKey.idClient.toString())
+                    .setIdPixKey(savedPixKey.externalId.toString())
+                    .build()
+            )
+        }
+
+        //assertions
+        with(assertThrows) {
+            assertEquals(Status.FAILED_PRECONDITION.code, status.code)
+            assertEquals("Participant is not allowed to access this resource", status.description)
+        }
+    }
+
+
+
     @MockBean(ClientItau::class)
     fun clientItau() : ClientItau =
         Mockito.mock(ClientItau::class.java)
@@ -199,7 +268,7 @@ internal class RemovePixServiceGrpcEndpointTest(
         KeyPix(
             idClient = CLIENT_ID,
             typeKey = TypeKey.EMAIL,
-            valueKey = "already_key@email.com",
+            valueKey = "removed_key@email.com",
             typeAccount = TypeAccount.CHECKING_ACCOUNT,
             branch = "0001",
             accountNumber = "048967",
