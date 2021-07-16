@@ -2,9 +2,11 @@ package br.com.zupedu.pix.endpoints
 
 import br.com.zupedu.grpc.RemovePixRequest
 import br.com.zupedu.grpc.RemovePixServiceGrpc
+import br.com.zupedu.pix.externalConnections.bcb.ClientBcb
+import br.com.zupedu.pix.externalConnections.bcb.requests.*
+import br.com.zupedu.pix.externalConnections.bcb.responses.DeletePixKeyResponse
 import br.com.zupedu.pix.externalConnections.itau.ClientItau
 import br.com.zupedu.pix.externalConnections.itau.ClientItauAccountResponse
-import br.com.zupedu.pix.externalConnections.itau.ClientItauResponse
 import br.com.zupedu.pix.model.Institution
 import br.com.zupedu.pix.model.KeyPix
 import br.com.zupedu.pix.model.Owner
@@ -39,6 +41,9 @@ internal class RemovePixServiceGrpcEndpointTest(
     @Inject
     private lateinit var clientItau: ClientItau
 
+    @Inject
+    private lateinit var clientBcb: ClientBcb
+
     private companion object {
         private val CLIENT_ID = UUID.randomUUID()
     }
@@ -53,13 +58,22 @@ internal class RemovePixServiceGrpcEndpointTest(
         //scenario
         val savedPixKey = pixRepository.save(createNewKey())
 
-        `when`(clientItau.retrieveAccountClient(idClient = CLIENT_ID.toString()))
+        `when`(clientItau.retrieveAccountClient(idClient = savedPixKey.idClient.toString()))
             .thenReturn(HttpResponse.ok(dataClientAccountResponse()))
+
+        `when`(clientBcb.removeKey(
+            key = savedPixKey.valueKey,
+            deletePixKeyRequest = DeletePixKeyRequest(
+                key = savedPixKey.valueKey,
+                participant = savedPixKey.institution.ispb
+            )
+        ))
+            .thenReturn(HttpResponse.ok(DeletePixKeyResponse(key = savedPixKey.valueKey, participant = savedPixKey.institution.ispb)))
 
         //actions
         val response = removeGrpcClient.remove(
             RemovePixRequest.newBuilder()
-                .setIdClient(CLIENT_ID.toString())
+                .setIdClient(savedPixKey.idClient.toString())
                 .setIdPixKey(savedPixKey.externalId.toString())
                 .build()
         )
@@ -177,21 +191,9 @@ internal class RemovePixServiceGrpcEndpointTest(
     fun clientItau() : ClientItau =
         Mockito.mock(ClientItau::class.java)
 
-    private fun dataAccountResponse() =
-        ClientItauResponse (
-            tipo = "CONTA_CORRENTE",
-            numero = "483201",
-            instituicao = ClientItauResponse.Instituicao(
-                nome = "My Bank",
-                ispb = "908765"
-            ),
-            agencia = "0001",
-            titular = ClientItauResponse.Titular(
-                nome = "John Doe",
-                cpf = "43951423030",
-                id = UUID.randomUUID().toString()
-            )
-        )
+    @MockBean(ClientBcb::class)
+    fun clientBcb() : ClientBcb =
+        Mockito.mock(ClientBcb::class.java)
 
     private fun createNewKey() =
         KeyPix(
@@ -203,7 +205,7 @@ internal class RemovePixServiceGrpcEndpointTest(
             accountNumber = "048967",
             institution = Institution(
                 nome = "My Bank",
-                ispb = "908765"
+                ispb = "60701190"
             ),
             owner = Owner(
                 nome = "John Doe",
@@ -220,9 +222,11 @@ internal class RemovePixServiceGrpcEndpointTest(
             RemovePixServiceGrpc.newBlockingStub(channel)
     }
 
-    private fun dataClientAccountResponse() =
-        ClientItauAccountResponse(
-            id = CLIENT_ID.toString(),
-            nome = "John Doe"
+    private fun dataClientAccountResponse(): ClientItauAccountResponse {
+        val keyPix = createNewKey()
+        return ClientItauAccountResponse(
+            id = keyPix.idClient.toString(),
+            nome = keyPix.owner.nome
         )
+    }
 }

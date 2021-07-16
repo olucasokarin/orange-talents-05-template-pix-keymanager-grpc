@@ -189,8 +189,6 @@ internal class PixServiceGrpcEndpointTest(
         //scenario
         val newKey = createNewKey()
 
-//        val registerKey = clientBcb.registerKey(createPixBcbRequest())
-
         `when`(clientItau.retrieve(id = newKey.idClient.toString(), tipo = "CONTA_CORRENTE"))
             .thenReturn(HttpResponse.ok(dataAccountResponse()))
 
