@@ -41,7 +41,8 @@ class RemovePixService(
         val responseKeyBcb = clientBcb.removeKey(pixKey.valueKey, deletePixKeyRequest)
 
         if (responseKeyBcb.status == HttpStatus.NOT_FOUND)
-            throw IllegalStateException("This pix not found on system BCB")
+            pixRepository.deleteById(pixKey.id)
+//            throw IllegalStateException("This pix not found on system BCB")
 
         if (responseKeyBcb.status == HttpStatus.FORBIDDEN)
             throw IllegalStateException("Participant is not allowed to access this resource")
