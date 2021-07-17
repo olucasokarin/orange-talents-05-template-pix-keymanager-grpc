@@ -20,6 +20,10 @@ service RetrievePixService {
   rpc retrieve (RetrievePixRequest) returns (RetrievePixReply) {}
 }
 
+service RetrieveAllService {
+  rpc retrieveAll (RetrieveListRequest) returns (RetrieveListReply) {}
+}
+
 enum TypeKey {
   UNKNOWN_KEY = 0;
   CPF = 1;
@@ -84,4 +88,21 @@ message RetrievePixReply {
     string numberAccount = 3;
     TypeAccount typeAccount = 4;
   }
+}
+
+message RetrieveListRequest {
+  string idClient = 1;
+}
+
+message RetrieveListReply {
+  message ListPix {
+    string idPix = 1;
+    TypeKey typeKey = 2;
+    string valueKey = 3;
+    TypeAccount typeAccount = 4;
+    google.protobuf.Timestamp createdAt = 5;
+  }
+
+  string idClient = 1;
+  repeated ListPix listPix = 2;
 }

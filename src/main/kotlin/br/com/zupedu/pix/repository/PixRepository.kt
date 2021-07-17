@@ -17,4 +17,6 @@ interface PixRepository : JpaRepository<KeyPix, Long> {
     fun findByIdClient(idClient: UUID?, idPix: UUID?): Optional<KeyPix>
 
     fun findByValueKey(value: String): Optional<KeyPix>
+
+    fun findByIdClient(idClient: UUID?) : List<KeyPix>
 }
