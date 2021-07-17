@@ -33,7 +33,7 @@ sealed class RetrievePixService {
 
             val responseBcb = clientBcb.retrieveKey(optionalPix.get().valueKey)
             if (responseBcb.status == HttpStatus.NOT_FOUND)
-                throw KeyPixNotExistingException("Pix not found")
+                throw KeyPixNotExistingException("Pix not found on BCB")
 
             return optionalPix.get()
         }
