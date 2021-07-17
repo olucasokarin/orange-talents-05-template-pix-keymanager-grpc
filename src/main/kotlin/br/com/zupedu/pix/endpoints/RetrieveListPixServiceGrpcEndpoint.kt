@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank
 @ErrorAroundHandler
 class RetrieveListPixServiceGrpcEndpoint(
     @Inject private val service: RetrieveListService
-) : RetrieveAllServiceGrpc.RetrieveAllServiceImplBase() {
+) : RetrieveAllPixServiceGrpc.RetrieveAllPixServiceImplBase() {
     override fun retrieveAll(
         request: RetrieveListRequest?,
         responseObserver: StreamObserver<RetrieveListReply>?

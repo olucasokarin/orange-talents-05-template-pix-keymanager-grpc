@@ -20,7 +20,7 @@ service RetrievePixService {
   rpc retrieve (RetrievePixRequest) returns (RetrievePixReply) {}
 }
 
-service RetrieveAllService {
+service RetrieveAllPixService {
   rpc retrieveAll (RetrieveListRequest) returns (RetrieveListReply) {}
 }
 
