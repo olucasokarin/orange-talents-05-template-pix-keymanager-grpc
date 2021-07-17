@@ -23,6 +23,11 @@ interface ClientBcb {
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
     fun removeKey(@PathVariable key: String, @Body deletePixKeyRequest: DeletePixKeyRequest) : HttpResponse<DeletePixKeyResponse>
+
+    @Get("/api/v1/pix/keys/{key}")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    fun retrieveKey(@PathVariable key: String) : HttpResponse<Any>
 }
 
 
@@ -35,4 +40,8 @@ class ClientBcbFallback : ClientBcb {
     override fun removeKey(key: String, deletePixKeyRequest: DeletePixKeyRequest): HttpResponse<DeletePixKeyResponse> {
         return HttpResponse.status(HttpStatus.FORBIDDEN)
     }
+
+    override fun retrieveKey(key: String): HttpResponse<Any> =
+        HttpResponse.badRequest()
+
 }

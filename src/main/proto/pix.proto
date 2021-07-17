@@ -6,12 +6,18 @@ option java_outer_classname = "PixServiceOuterClass";
 
 package br.com.zupedu.grpc;
 
+import "google/protobuf/timestamp.proto";
+
 service PixService {
   rpc register (RegisterPixRequest) returns (RegisterPixReply) {}
 }
 
 service RemovePixService {
   rpc remove (RemovePixRequest) returns (RemovePixReply) {}
+}
+
+service RetrievePixService {
+  rpc retrieve (RetrievePixRequest) returns (RetrievePixReply) {}
 }
 
 enum TypeKey {
@@ -47,4 +53,35 @@ message RemovePixRequest {
 
 message RemovePixReply {
   string status = 1;
+}
+
+message RetrievePixRequest {
+  oneof decide {
+    string valuePix = 1;
+    MessageInternal idPix = 2;
+  }
+
+  message MessageInternal {
+    string idClient = 1;
+    string idPix = 2;
+  }
+
+}
+
+message RetrievePixReply {
+  string idPix = 1;
+  string idClient = 2;
+  TypeKey typeKey = 3;
+  string valueKey = 4;
+  string OwnerName = 5;
+  string OwnerCPF = 6;
+  Institution institution = 7;
+  google.protobuf.Timestamp createdAt = 8;
+
+  message Institution {
+    string name = 1;
+    string branch = 2;
+    string numberAccount = 3;
+    TypeAccount typeAccount = 4;
+  }
 }

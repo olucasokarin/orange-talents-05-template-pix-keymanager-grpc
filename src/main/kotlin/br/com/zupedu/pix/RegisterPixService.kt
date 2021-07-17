@@ -43,7 +43,7 @@ class RegisterPixService(
         if (responseKeyBcb.status == HttpStatus.UNPROCESSABLE_ENTITY)
             throw IllegalStateException("Pix key already exist on  BCB")
 
-        keyPix.updateValueKey(responseKeyBcb.body().key)
+        keyPix.updateValueKey(responseKeyBcb.body()!!.key)
         pixRepository.save(keyPix)
 
         return keyPix
