@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: olucas-grpc-cm
+data:
+  DATABASE_USER: "{{ .Values.application.DATABASE_USER }}"
+  DATABASE_URL: "{{ .Values.application.DATABASE_URL }}"

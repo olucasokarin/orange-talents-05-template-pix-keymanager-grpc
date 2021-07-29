@@ -1,0 +1,35 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - curl -o /bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl
+      - curl -sS -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
+      - wget -qO- https://get.helm.sh/helm-v3.5.2-linux-amd64.tar.gz | tar xvz
+      - mv linux-amd64/helm /bin/helm
+      - chmod +x /bin/kubectl /bin/helm ./aws-iam-authenticator
+      - export PATH=$PWD/:$PATH
+      - apt-get update && apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
+
+  build:
+    commands:
+      - docker login --username $DOCKERHUB_USERNAME --password $DOCKEHUB_PASSWORD
+      - sh gradlew build
+      - docker build -t olucas-pix-grpc .
+      - docker image ls
+      - docker tag olucas-pix-grpc public.ecr.aws/i2c7a5l2/olucas-ot5-ecr-pix-grpc:latest
+      - docker image ls
+
+
+  post_build:
+    commands:
+      - echo Pushing in to Amazon ECR...
+      - docker login -u AWS -p $(aws ecr-public get-login-password --region us-east-1) public.ecr.aws/i2c7a5l2/olucas-ot5-ecr-pix-grpc
+      - docker push public.ecr.aws/i2c7a5l2/olucas-ot5-ecr-pix-grpc:latest
+      - echo Push completed on `date`
+      - echo deploying to cluster...
+      - helm version --short
+      - helm lint pipeline/orange-pix-grpc --values pipeline/orange-pix-grpc/values.yaml
+      - aws eks --region us-east-1 update-kubeconfig --name zup-sandbox-edu --role-arn $ARN_ROLE
+      - kubectl get nodes
+      - helm upgrade -i orange-pix-grpc pipeline/orange-pix-grpc/ --values pipeline/orange-pix-grpc/values.yaml

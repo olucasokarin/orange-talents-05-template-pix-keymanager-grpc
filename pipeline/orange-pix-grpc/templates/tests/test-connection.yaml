@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "orange-pix-grpc.fullname" . }}-test-connection"
+  labels:
+    {{- include "orange-pix-grpc.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "orange-pix-grpc.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
