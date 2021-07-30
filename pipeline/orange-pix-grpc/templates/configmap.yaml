@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: olucas-grpc-cm
 data:
-  DATABASE_USER: "{{ .Values.application.DATABASE_USER }}"
-  DATABASE_URL: "{{ .Values.application.DATABASE_URL }}"
+  DB_USER: "{{ .Values.application.DB_USER }}"
+  DB_URI: "{{ .Values.application.DB_URI }}"
