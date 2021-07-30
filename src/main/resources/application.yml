@@ -4,7 +4,7 @@ micronaut:
 
 grpc:
   server:
-    port: ${SERVER_PORT:50052}
+    port: ${SERVER_PORT:50051}
     keep-alive-time: 1h
     max-inbound-message-size: 1024
 
