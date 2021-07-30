@@ -5,3 +5,7 @@ metadata:
 data:
   DB_USER: "{{ .Values.application.DB_USER }}"
   DB_URI: "{{ .Values.application.DB_URI }}"
+  DB_DIALECT: "{{ .Values.application.DB_DIALECT }}"
+  ITAU_URL: "{{ .Values.application.ITAU_URL }}"
+  BCB_URL: "{{ .Values.application.BCB_URL }}"
+  SERVER_PORT: "{{ .Values.application.SERVER_PORT }}"
