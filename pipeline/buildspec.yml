@@ -13,7 +13,7 @@ phases:
 
   build:
     commands:
-      - docker login --username $DOCKERHUB_USERNAME --password $DOCKEHUB_PASSWORD
+      - docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_PASSWORD
       - sh gradlew build
       - docker build -t olucas-pix-grpc .
       - docker image ls

@@ -82,6 +82,10 @@ tolerations: []
 affinity: {}
 
 application:
-  DATABASE_USER: postgres
-  DATABASE_URL: jdbc:postgresql://olucas-ot5-db.chpeyn5uxxax.us-east-1.rds.amazonaws.com
-  DATABASE_PASS: j8BqCKRf5bGCs3se
+  DB_USER: postgres
+  DB_URI: jdbc:postgresql://olucas-ot5-db.chpeyn5uxxax.us-east-1.rds.amazonaws.com
+  DB_PASSWORD: j8BqCKRf5bGCs3se
+  DB_DIALECT: POSTGRES
+  ITAU_URL: $ITAU_URL
+  BCB_URL: $BCB_URL
+  SERVER_PORT: 50051
