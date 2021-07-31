@@ -23,6 +23,7 @@ repositories {
 }
 
 micronaut {
+    runtime("netty")
     testRuntime("junit5")
     processing {
         incremental(true)
@@ -58,7 +59,7 @@ dependencies {
 
     implementation("io.micronaut.xml:micronaut-jackson-xml")
 
-
+    implementation("io.micronaut:micronaut-management")
 }
 
 

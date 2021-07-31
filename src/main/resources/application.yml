@@ -24,3 +24,12 @@ URL:
   EXTERNAL:
     ITAU: ${ITAU_URL:`http://localhost:9091`}
     BCB: ${BCB_URL:`http://localhost:8082`}
+
+endpoints:
+  health:
+    enabled: true
+    sensitive: false
+    details-visible: ANONYMOUS
+    status:
+      http-mapping:
+        DOWN: 200

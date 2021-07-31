@@ -38,14 +38,14 @@ spec:
             - name: http
               containerPort: 50051
               protocol: TCP
-#          livenessProbe:
-#            httpGet:
-#              path: /actuator/health
-#              port: 8080
-#          readinessProbe:
-#            httpGet:
-#              path: /actuator/health
-#              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
           envFrom:
             - configMapRef:
                 name: olucas-grpc-cm
